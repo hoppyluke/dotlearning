@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2024
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotLearning", "src\DotLearning\DotLearning.csproj", "{2EF0DED6-0B8A-4E96-8F7F-BB6D5B7AF417}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotLearning.Tests", "tests\DotLearning.Tests\DotLearning.Tests.csproj", "{5B47316F-933F-46F8-BEE7-6E83CF3DCAA0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4BA12FAC-F17E-469B-8116-B22B9DE9673B}"
+	ProjectSection(SolutionItems) = preProject
+		Notes.md = Notes.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2EF0DED6-0B8A-4E96-8F7F-BB6D5B7AF417}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EF0DED6-0B8A-4E96-8F7F-BB6D5B7AF417}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EF0DED6-0B8A-4E96-8F7F-BB6D5B7AF417}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EF0DED6-0B8A-4E96-8F7F-BB6D5B7AF417}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B47316F-933F-46F8-BEE7-6E83CF3DCAA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B47316F-933F-46F8-BEE7-6E83CF3DCAA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B47316F-933F-46F8-BEE7-6E83CF3DCAA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B47316F-933F-46F8-BEE7-6E83CF3DCAA0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AAA99DD1-C909-418A-A054-A37A8F585614}
+	EndGlobalSection
+EndGlobal
