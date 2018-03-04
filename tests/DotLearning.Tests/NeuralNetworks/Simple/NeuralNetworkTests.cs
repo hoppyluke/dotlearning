@@ -7,6 +7,8 @@ namespace DotLearning.Tests.NeuralNetworks.Simple
 {
     public class NeuralNetworkTests
     {
+        private readonly DataGenerator _generator = new DataGenerator();
+
         [Fact]
         public void Constructor_Throws_IfNeuronFactoryIsNull()
         {
@@ -97,7 +99,7 @@ namespace DotLearning.Tests.NeuralNetworks.Simple
             
             network.Calculate(inputs);
 
-            Assert.Equal(inputs, outputNeuron.ActualInput);
+            Assert.Equal(inputs, outputNeuron.ReceivedInput);
         }
 
         [Fact]
@@ -124,6 +126,94 @@ namespace DotLearning.Tests.NeuralNetworks.Simple
             var result = network.Calculate(new[] { 1d });
 
             Assert.Equal(expectedOutput, result);
+        }
+
+        [Fact]
+        public void Train_CallsCalculateOnEachNeuron_PerExampleAndEpoch()
+        {
+            var features = 5;
+            var outputs = 3;
+            var trainingSetSize = 100;
+            var trainingSet = _generator.RandomTrainingData(trainingSetSize, features, outputs);
+            var epochs = 100;
+            var neuronFactory = new FakeNeuronFactory();
+            var network = new NeuralNetwork(neuronFactory.Create, features, 10, outputs);
+
+            network.Train(trainingSet, epochs, 10, 0.1d, (y, a) => a - y);
+
+            Assert.All(neuronFactory.Neurons, n => Assert.Equal(epochs * trainingSetSize, n.TimesCalculated));
+        }
+
+        [Fact]
+        public void Train_CallsCalculateErrorOnEachNeuron_PerExampleAndEpoch()
+        {
+            var features = 5;
+            var outputs = 3;
+            var trainingSetSize = 100;
+            var trainingSet = _generator.RandomTrainingData(trainingSetSize, features, outputs);
+            var epochs = 100;
+            var neuronFactory = new FakeNeuronFactory();
+            var network = new NeuralNetwork(neuronFactory.Create, features, 10, outputs);
+
+            network.Train(trainingSet, epochs, 10, 0.1d, (y, a) => a - y);
+
+            Assert.All(neuronFactory.Neurons, n => Assert.Equal(trainingSetSize * epochs, n.TimesCalculatedError));
+        }
+
+        [Fact]
+        public void Train_CalculatesErrorCorrectly_InOutputLayer()
+        {
+            var features = 1;
+            var outputs = 1;
+            var trainingSetSize = 1;
+            var trainingSet = _generator.RandomTrainingData(trainingSetSize, features, outputs);
+            var neuronFactory = new FakeNeuronFactory();
+            var network = new NeuralNetwork(neuronFactory.Create, 1, 1);
+            var outputNeuron = neuronFactory.Neurons[0];
+            outputNeuron.Output = 0.5d;
+
+            network.Train(trainingSet, 1, 1, 1, (y, a) => a - y);
+
+            var trainingExample = trainingSet.First();
+            Assert.True(outputNeuron.HasCalculatedError);
+            Assert.Equal(outputNeuron.Output - trainingExample.expected[0], outputNeuron.Error);
+        }
+
+        [Fact]
+        public void Train_CalculatesErrorCorrectly_InHiddenLayer()
+        {
+            var trainingSetSize = 1;
+            var trainingSet = _generator.RandomTrainingData(trainingSetSize, 1, 1);
+            var neuronFactory = new FakeNeuronFactory();
+            var network = new NeuralNetwork(neuronFactory.Create, 1, 1, 1);
+            var hiddenNeuron = neuronFactory.Neurons[0];
+            var outputNeuron = neuronFactory.Neurons[1];
+            var w = 0.75d;
+            outputNeuron.SetWeight(1, 0, w);
+            outputNeuron.Output = 0.5d;
+
+            network.Train(trainingSet, 1, 1, 1, (y, a) => a - y);
+
+            var trainingExample = trainingSet.First();
+            Assert.True(hiddenNeuron.HasCalculatedError);
+            Assert.Equal(outputNeuron.Error, hiddenNeuron.ErrorsReceivedFromNextLayer[0]);
+            Assert.Equal(w, hiddenNeuron.WeightsReceivedFromNextLayer[0]);
+        }
+
+        [Fact]
+        public void Train_CallsLearn_PerBatchAndEpoch()
+        {
+            var trainingSetSize = 100;
+            var trainingSet = _generator.RandomTrainingData(trainingSetSize, 1, 1);
+            var batchSize = 10;
+            var epochs = 100;
+            var neuronFactory = new FakeNeuronFactory();
+            var network = new NeuralNetwork(neuronFactory.Create, 1, 10, 1);
+
+            network.Train(trainingSet, epochs, batchSize, 0.1d, (y, a) => y);
+
+            var expectedUpdates = (int)Math.Ceiling(trainingSetSize / (double)batchSize) * epochs;
+            Assert.All(neuronFactory.Neurons, n => Assert.Equal(expectedUpdates, n.TimesLearnt));
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DotLearning.NeuralNetworks.Simple
@@ -69,6 +70,73 @@ namespace DotLearning.NeuralNetworks.Simple
                 neuron.Calculate();
 
             return _outputLayer.Select(n => n.Output).ToArray();
+        }
+
+        /// <summary>
+        /// Trains the neural network by stochastic gradient descent.
+        /// </summary>
+        /// <param name="trainingData">Pairs of example input and expected output to train on.</param>
+        /// <param name="epochs">Number of training epochs to run.</param>
+        /// <param name="batchSize"></param>
+        /// <param name="learningRate"></param>
+        /// <param name="costDerivative">
+        /// Partial derivative of the cost function with respect to a single activation of the output layer.
+        /// Takes as arguments the expected and actual activation (in that order).
+        /// </param>
+        public void Train(IEnumerable<(double[] input, double[] expected)> trainingData, int epochs, int batchSize, double learningRate,  Func<double, double, double> costDerivative)
+        {
+            var examples = trainingData.ToList();
+            var totalExamples = examples.Count; 
+
+            for(var i = 0; i < epochs; i++)
+            {
+                var shuffledExamples = examples.OrderBy(d => Guid.NewGuid()).ToList();
+                
+                for(var j = 0; j < totalExamples; j += batchSize)
+                {
+                    var currentBatchSize = Math.Min(batchSize, totalExamples - j);
+                    var batch = shuffledExamples.GetRange(j, currentBatchSize);
+
+                    TrainBatch(batch, learningRate, costDerivative);
+                }
+            }
+        }
+
+        private void TrainBatch(IEnumerable<(double[] input, double[] expected)> batch, double learningRate, Func<double, double, double> costDerivative)
+        {
+            foreach (var example in batch)
+            {
+                // Feedforward to calculate output for example
+                Calculate(example.input);
+
+                // Back propagate the error
+                for (var k = 0; k < _outputLayer.Length; k++)
+                    _outputLayer[k].CalculateError(example.expected[k], costDerivative);
+
+                var previousLayer = _outputLayer;
+
+                for (var l = _hiddenLayers.Length - 1; l >= 0; l--)
+                {
+                    var currentLayer = _hiddenLayers[l];
+                    var previousErrors = previousLayer.Select(n => n.Error).ToArray();
+
+                    for (var k = 0; k < currentLayer.Length; k++)
+                    {
+                        var previousWeights = previousLayer.Select(n => n.Weights[k]).ToArray();
+                        currentLayer[k].CalculateError(previousErrors, previousWeights);
+                    }
+
+                    previousLayer = currentLayer;
+                }
+            }
+
+            // Update neuron weights/biases
+            foreach (var layer in _hiddenLayers)
+                foreach (var neuron in layer)
+                    neuron.Learn(learningRate);
+
+            foreach (var outputNeuron in _outputLayer)
+                outputNeuron.Learn(learningRate);
         }
 
         private static ICalculatingNeuron[] CreateLayer(int size, INeuron[] previousLayer, Func<INeuron[], ICalculatingNeuron> neuronFactory)
