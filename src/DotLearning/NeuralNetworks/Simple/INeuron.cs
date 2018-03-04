@@ -1,9 +1,12 @@
 ﻿namespace DotLearning.NeuralNetworks.Simple
 {
+    /// <summary>
+    /// A neuron in a network.
+    /// </summary>
     public interface INeuron
     {
         /// <summary>
-        /// Gets the value calculated by this neuron.
+        /// Gets output/activation value of this neuron.
         /// </summary>
         double Output { get; }
     }
