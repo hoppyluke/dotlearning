@@ -3,7 +3,7 @@
     /// <summary>
     /// A neuron in an input layer which simply returns the input value assigned.
     /// </summary>
-    public class InputNeuron : INeuron
+    internal class InputNeuron : INeuron
     {
         /// <summary>
         /// Gets or sets the input value of this neuron.
