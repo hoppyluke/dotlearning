@@ -69,6 +69,22 @@ namespace DotLearning.Mathematics.LinearAlgebra
             return new Matrix(v._items, true);
         }
 
+        /// <summary>
+        /// Converts a column matrix into a vector.
+        /// </summary>
+        /// <param name="m">A single-column matrix.</param>
+        public static explicit operator Vector(Matrix m)
+        {
+            if (m == null) return null;
+            if (m.Columns != 1) throw new InvalidCastException("Matrix with multiple columns cannot be cast to a Vector");
+
+            var v = new Vector(m.Rows);
+            for (var i = 0; i < m.Rows; i++)
+                v[i] = m[i, 0];
+
+            return v;
+        }
+
         public static Vector HadamardProduct(Vector u, Vector v)
         {
             ValidateVectors(u, v, "Cannot calculate Hadamard product for vectors of size {0} and {1}");
@@ -79,6 +95,24 @@ namespace DotLearning.Mathematics.LinearAlgebra
                 product[i] = u[i] * v[i];
 
             return product;
+        }
+
+        /// <summary>
+        /// Applies a function element-wise to a vector.
+        /// </summary>
+        /// <param name="f">Function to vectorise.</param>
+        /// <param name="v">Vector to apply function to.</param>
+        /// <returns>A new vector defined by u[i] = f(v[i]).</returns>
+        public static Vector Apply(Func<double, double> f, Vector v)
+        {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            if (v == null) throw new ArgumentNullException(nameof(v));
+
+            var result = new Vector(v.Count);
+            for (var i = 0; i < v.Count; i++)
+                result[i] = f(v[i]);
+
+            return result;
         }
 
         /// <summary>

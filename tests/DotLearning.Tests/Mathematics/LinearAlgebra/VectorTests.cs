@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DotLearning.Mathematics.LinearAlgebra;
 using Xunit;
 
@@ -163,6 +164,34 @@ namespace DotLearning.Tests.Mathematics.LinearAlgebra
             Assert.Equal(vector.Length, m.Rows);
         }
 
+        [Fact]
+        public void ExplicitConversionFromMatrix_HandlesNull()
+        {
+            Matrix m = null;
+            var v = (Vector)m;
+            Assert.Null(v);
+        }
+
+        [Theory]
+        [InlineData(3, 2)]
+        public void ExplicitConversionFromMatrix_ThrowsIfMatrixIsNotColumnMatrix(int rows, int columns)
+        {
+            var m = new Matrix(rows, columns);
+            Assert.Throws<InvalidCastException>(() => (Vector)m);
+        }
+
+        [Theory]
+        [InlineData(new double[] { 1 })]
+        [InlineData(new double[] { 1, 2, 3 })]
+        public void ExplicitConversionFromMatrix_ReturnsExpectedVector(double[] values)
+        {
+            var m = new Matrix(values, true);
+            var v = (Vector)m;
+
+            for (var i = 0; i < values.Length; i++)
+                Assert.Equal(values[i], v[i]);
+        }
+
         #endregion
 
         #region Equality
@@ -295,6 +324,8 @@ namespace DotLearning.Tests.Mathematics.LinearAlgebra
             Assert.False(v != u);
         }
 
+        #endregion
+
         [Fact]
         public void HadamardProduct_ThrowsIfEitherVectorIsNull()
         {
@@ -330,9 +361,7 @@ namespace DotLearning.Tests.Mathematics.LinearAlgebra
             for (var i = 0; i < product.Count; i++)
                 Assert.Equal(expectedProduct[i], product[i]);
         }
-
-        #endregion
-
+        
         [Theory]
         [InlineData(new double[] {2}, 2d)]
         [InlineData(new double[] {3, 4}, 5d)]
@@ -341,6 +370,49 @@ namespace DotLearning.Tests.Mathematics.LinearAlgebra
             var v = new Vector(vector);
             var actualLength = v.Magnitude;
             Assert.Equal(expectedMagnitude, actualLength);
+        }
+
+        [Fact]
+        public void Apply_ThrowsIfParametersAreNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => Vector.Apply(x => x, null));
+            Assert.Throws<ArgumentNullException>(() => Vector.Apply(null, new Vector(1)));
+        }
+
+        [Theory]
+        [MemberData(nameof(ExamplesForApply))]
+        public void Apply_ReturnsCorrectResult(Vector v, Func<double, double> f, Vector expected)
+        {
+            var result = Vector.Apply(f, v);
+            
+            Assert.Equal(expected, result);
+        }
+
+        public static IEnumerable<object[]> ExamplesForApply()
+        {
+            Func<double, double> @double = x => 2 * x;
+            Func<double, double> identity = x => x;
+
+            yield return new object[]
+            {
+                new Vector(new[] {1d}),
+                @double,
+                new Vector(new[] {2d})
+            };
+
+            yield return new object[]
+            {
+                new Vector(new[] {1d, 2d, 3d}),
+                identity,
+                new Vector(new[] {1d, 2d, 3d})
+            };
+
+            yield return new object[]
+            {
+                new Vector(new[] {1d, 2d, 3d}),
+                @double,
+                new Vector(new[] {2d, 4d, 6d})
+            };
         }
     }
 }
