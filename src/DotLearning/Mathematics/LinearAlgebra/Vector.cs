@@ -68,5 +68,14 @@ namespace DotLearning.Mathematics.LinearAlgebra
         {
             return ArrayFunctions.ContentHash(_items);
         }
+
+        public override string ToString()
+        {
+            const int maxItems = 10;
+            if (Count <= maxItems) return $"Vector[{Count}]: [{string.Join(", ", _items)}]";
+
+            var itemsToShow = new ArraySegment<double>(_items, 0, maxItems);
+            return $"Vector[{Count}]: [{string.Join(", ", itemsToShow)}, ...]";
+        }
     }
 }

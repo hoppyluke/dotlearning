@@ -388,6 +388,26 @@ namespace DotLearning.Tests.Mathematics.LinearAlgebra
             Assert.Equal(expected, result);
         }
 
+        [Theory]
+        [InlineData(new double[] { 1 }, "Vector[1]: [1]")]
+        [InlineData(new double[] { 1, 2, 3 }, "Vector[3]: [1, 2, 3]")]
+        [InlineData(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, "Vector[10]: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]")]
+        public void ToString_ReturnsFullContentsForSmallVector(double[] v, string expected)
+        {
+            var vector = new Vector(v);
+            var s = vector.ToString();
+            Assert.Equal(expected, s);
+        }
+
+        [Theory]
+        [InlineData(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Vector[11]: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, ...]")]
+        public void ToString_TruncatesAfter10Items(double[] v, string expected)
+        {
+            var vector = new Vector(v);
+            var s = vector.ToString();
+            Assert.Equal(expected, s);
+        }
+        
         public static IEnumerable<object[]> ExamplesForApply()
         {
             Func<double, double> @double = x => 2 * x;
