@@ -45,6 +45,25 @@ namespace DotLearning.Mathematics.LinearAlgebra
         }
 
         /// <summary>
+        /// Matrix substraction.
+        /// </summary>
+        public static Matrix operator -(Matrix a, Matrix b)
+        {
+            if (a == null) throw new ArgumentNullException(nameof(a));
+            if (b == null) throw new ArgumentNullException(nameof(b));
+            if (a.Rows != b.Rows || a.Columns != b.Columns)
+                throw new ArgumentException($"Cannot subtract a {b.Rows}x{b.Columns} matrix to a {a.Rows}x{a.Columns} matrix");
+
+            var result = new Matrix(a);
+
+            for (var i = 0; i < a.Rows; i++)
+                for (var j = 0; j < a.Columns; j++)
+                    result[i, j] = a[i, j] - b[i, j];
+
+            return result;
+        }
+
+        /// <summary>
         /// Matrix multiplication.
         /// </summary>
         public static Matrix operator *(Matrix a, Matrix b)

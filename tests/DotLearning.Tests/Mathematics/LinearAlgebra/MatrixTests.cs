@@ -376,6 +376,55 @@ namespace DotLearning.Tests.Mathematics.LinearAlgebra
             Assert.Equal(88, s[2, 1]);
             Assert.Equal(99, s[2, 2]);
         }
+        
+        [Fact]
+        public void Subtraction_ThrowsIfNull()
+        {
+            Matrix m = new Matrix(1, 1), n = null;
+            Assert.Throws<ArgumentNullException>(() => m - n);
+            Assert.Throws<ArgumentNullException>(() => n - m);
+        }
+
+        [Theory]
+        [InlineData(3, 2, 2, 3)]
+        [InlineData(1, 1, 2, 2)]
+        public void Subtraction_ThrowsIfDimensionsNotEqual(int m1, int n1, int m2, int n2)
+        {
+            var m = new Matrix(m1, n1);
+            var n = new Matrix(m2, n2);
+
+            Assert.Throws<ArgumentException>(() => m - n);
+        }
+
+        [Fact]
+        public void Subtraction_ReturnsElementwiseResult()
+        {
+            var m = new Matrix(new double[,]
+            {
+                { 10, 20, 30 },
+                { 40, 50, 60 },
+                { 70, 80, 90 }
+            });
+
+            var n = new Matrix(new double[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+                { 7, 8, 9 }
+            });
+
+            var s = m - n;
+
+            Assert.Equal(9, s[0, 0]);
+            Assert.Equal(18, s[0, 1]);
+            Assert.Equal(27, s[0, 2]);
+            Assert.Equal(36, s[1, 0]);
+            Assert.Equal(45, s[1, 1]);
+            Assert.Equal(54, s[1, 2]);
+            Assert.Equal(63, s[2, 0]);
+            Assert.Equal(72, s[2, 1]);
+            Assert.Equal(81, s[2, 2]);
+        }
 
         [Fact]
         public void MatrixMultiplication_ThrowsIfNull()
