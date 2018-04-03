@@ -18,17 +18,9 @@ namespace DotLearning.Mathematics.LinearAlgebra
 
         public static Vector operator *(double c, Vector v) => v * c;
 
-        public static Vector operator +(Vector u, Vector v)
-        {
-            ValidateVectors(u, v, "Cannot add a vector of size {1} to a vector of size {0}");
-
-            var w = new Vector(u.Count);
-
-            for (var i = 0; i < u.Count; i++)
-                w[i] = u[i] + v[i];
-
-            return w;
-        }
+        public static Vector operator +(Vector u, Vector v) => Zip(u, v, FunctionalOperator.Add);
+        public static Vector operator -(Vector u, Vector v) => Zip(u, v, FunctionalOperator.Subtract);
+        public static Vector HadamardProduct(Vector u, Vector v) => Zip(u, v, FunctionalOperator.Multiply);
 
         /// <summary>
         /// Calculates the dot product of two vectors.
@@ -84,19 +76,7 @@ namespace DotLearning.Mathematics.LinearAlgebra
 
             return v;
         }
-
-        public static Vector HadamardProduct(Vector u, Vector v)
-        {
-            ValidateVectors(u, v, "Cannot calculate Hadamard product for vectors of size {0} and {1}");
-
-            var product = new Vector(u.Count);
-
-            for (var i = 0; i < u.Count; i++)
-                product[i] = u[i] * v[i];
-
-            return product;
-        }
-
+        
         /// <summary>
         /// Applies a function element-wise to a vector.
         /// </summary>
@@ -111,6 +91,27 @@ namespace DotLearning.Mathematics.LinearAlgebra
             var result = new Vector(v.Count);
             for (var i = 0; i < v.Count; i++)
                 result[i] = f(v[i]);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Combines two identically sized vectors into element-wise pairs,
+        /// maps a bivariate function over the pairs and returns the resulting vector.
+        /// </summary>
+        /// <param name="u">First vector.</param>
+        /// <param name="v">Second vector.</param>
+        /// <param name="f">Function to apply to element pairs.</param>
+        /// <returns>Vector defined by [f(u[i], v[i])].</returns>
+        public static Vector Zip(Vector u, Vector v, Func<double, double, double> f)
+        {
+            ValidateVectors(u, v, "Cannot zip and map function over vectors of size {0} and {1}");
+            if (f == null) throw new ArgumentNullException(nameof(f));
+
+            var result = new Vector(u.Count);
+
+            for (var i = 0; i < u.Count; i++)
+                result[i] = f(u[i], v[i]);
 
             return result;
         }

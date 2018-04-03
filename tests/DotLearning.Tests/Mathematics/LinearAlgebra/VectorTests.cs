@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DotLearning.Mathematics;
 using DotLearning.Mathematics.LinearAlgebra;
 using Xunit;
 
@@ -115,6 +116,38 @@ namespace DotLearning.Tests.Mathematics.LinearAlgebra
             var v = new Vector(vector2);
             Assert.Throws<ArgumentException>(() => u + v);
             Assert.Throws<ArgumentException>(() => v + u);
+        }
+        
+        [Fact]
+        public void Subtraction_ThrowsIfEitherVectorIsNull()
+        {
+            Vector u = null, v = new Vector(1);
+            Assert.Throws<ArgumentNullException>(() => u - v);
+            Assert.Throws<ArgumentNullException>(() => v - u);
+            Assert.Throws<ArgumentNullException>(() => u - u);
+        }
+
+        [Theory]
+        [InlineData(new double[] { 1, 2, 3 }, new double[] { 4, 5, 6 })]
+        public void Subtraction_ReturnsElementwiseSubtraction(double[] vector1, double[] vector2)
+        {
+            var u = new Vector(vector1);
+            var v = new Vector(vector2);
+
+            var w = u - v;
+
+            for (var i = 0; i < vector1.Length; i++)
+                Assert.Equal(u[i] - v[i], w[i]);
+        }
+
+        [Theory]
+        [InlineData(new double[] { 1, 2 }, new double[] { 3, 4, 5 })]
+        public void Subtraction_ThrowsForDifferentSizes(double[] vector1, double[] vector2)
+        {
+            var u = new Vector(vector1);
+            var v = new Vector(vector2);
+            Assert.Throws<ArgumentException>(() => u - v);
+            Assert.Throws<ArgumentException>(() => v - u);
         }
 
         [Fact]
@@ -326,6 +359,8 @@ namespace DotLearning.Tests.Mathematics.LinearAlgebra
 
         #endregion
 
+        #region Functions
+
         [Fact]
         public void HadamardProduct_ThrowsIfEitherVectorIsNull()
         {
@@ -388,6 +423,40 @@ namespace DotLearning.Tests.Mathematics.LinearAlgebra
             Assert.Equal(expected, result);
         }
 
+        [Fact]
+        public static void Zip_ThrowsIfEitherVectorIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => Vector.Zip(null, new Vector(1), (u, v) => 0d));
+            Assert.Throws<ArgumentNullException>(() => Vector.Zip(new Vector(1), null, (u, v) => 0d));
+            Assert.Throws<ArgumentNullException>(() => Vector.Zip(null, null, (u, v) => 0d));
+        }
+
+        [Fact]
+        public static void Zip_ThrowsIfFunctionIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => Vector.Zip(new Vector(1), new Vector(1), null));
+        }
+
+        [Theory]
+        [InlineData(1, 3)]
+        public static void Zip_ThrowsIfVectorsAreDifferentSizes(int length1, int length2)
+        {
+            var u = new Vector(length1);
+            var v = new Vector(length2);
+
+            Assert.Throws<ArgumentException>(() => Vector.Zip(u, v, (x, y) => 0));
+        }
+
+        [Theory]
+        [MemberData(nameof(ExamplesForZip))]
+        public void Zip_AppliesFunctionPairwise(Vector u, Vector v, Func<double, double, double> f, Vector expected)
+        {
+            var result = Vector.Zip(u, v, f);
+            Assert.Equal(expected, result);
+        }
+
+        #endregion
+
         [Theory]
         [InlineData(new double[] { 1 }, "Vector[1]: [1]")]
         [InlineData(new double[] { 1, 2, 3 }, "Vector[3]: [1, 2, 3]")]
@@ -407,7 +476,9 @@ namespace DotLearning.Tests.Mathematics.LinearAlgebra
             var s = vector.ToString();
             Assert.Equal(expected, s);
         }
-        
+
+        #region Examples
+
         public static IEnumerable<object[]> ExamplesForApply()
         {
             Func<double, double> @double = x => 2 * x;
@@ -434,5 +505,26 @@ namespace DotLearning.Tests.Mathematics.LinearAlgebra
                 new Vector(new[] {2d, 4d, 6d})
             };
         }
+
+        public static IEnumerable<object[]> ExamplesForZip()
+        {
+            yield return new object[]
+            {
+                new Vector(new[] { 1d, 2d, 3d}),
+                new Vector(new[] { 4d, 5d, 6d}),
+                FunctionalOperator.Add,
+                new Vector(new[] { 5d, 7d, 9d})
+            };
+
+            yield return new object[]
+            {
+                new Vector(new[] { 4d, 5d, 6d}),
+                new Vector(new[] { 3d, 2d, 1d}),
+                FunctionalOperator.Subtract,
+                new Vector(new[] { 1d, 3d, 5d})
+            };
+        }
+
+        #endregion
     }
 }
