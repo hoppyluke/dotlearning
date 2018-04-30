@@ -22,7 +22,7 @@ namespace DotLearning.NeuralNetworks.MatrixBased
             for (var i = 0; i < size; i++)
                 biases[i] = Initialiser.Bias();
 
-            return new Layer(weights, biases, MathematicalFunctions.Sigmoid);
+            return new Layer(weights, biases, MathematicalFunctions.Sigmoid, MathematicalFunctions.SigmoidPrime);
         }
     }
 }

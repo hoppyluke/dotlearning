@@ -16,7 +16,8 @@ namespace DotLearning.Tests.NeuralNetworks.MatrixBased
 
         private Vector _output;
 
-        public FakeLayer(Matrix weights, Vector biases, Func<double, double> activationFunction) : base(weights, biases, activationFunction)
+        public FakeLayer(Matrix weights, Vector biases, Func<double, double> activationFunction, Func<double, double> activationFunctionDerivative)
+            : base(weights, biases, activationFunction, activationFunctionDerivative)
         {
             Weights = weights;
             Biases = biases;

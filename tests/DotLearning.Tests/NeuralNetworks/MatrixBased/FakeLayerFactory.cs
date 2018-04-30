@@ -12,7 +12,7 @@ namespace DotLearning.Tests.NeuralNetworks.MatrixBased
         
         public Layer Create(int numberOfNeurons, int numberOfInputs)
         {
-            var layer = new FakeLayer(new Matrix(numberOfNeurons, numberOfInputs), new Vector(numberOfNeurons), x => x);
+            var layer = new FakeLayer(new Matrix(numberOfNeurons, numberOfInputs), new Vector(numberOfNeurons), x => x, x => x);
             _layers.Add(layer);
             return layer;
         }

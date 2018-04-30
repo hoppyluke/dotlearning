@@ -11,9 +11,10 @@ namespace DotLearning.Tests.NeuralNetworks.MatrixBased
         [Fact]
         public void Constructor_ThrowsIfParametersAreNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new Layer(null, new Vector(1), x => x));
-            Assert.Throws<ArgumentNullException>(() => new Layer(new Matrix(1, 1), null, x => x));
-            Assert.Throws<ArgumentNullException>(() => new Layer(new Matrix(1, 1), new Vector(1), null));
+            Assert.Throws<ArgumentNullException>(() => new Layer(null, new Vector(1), x => x, x => x));
+            Assert.Throws<ArgumentNullException>(() => new Layer(new Matrix(1, 1), null, x => x, x => x));
+            Assert.Throws<ArgumentNullException>(() => new Layer(new Matrix(1, 1), new Vector(1), null, x => x));
+            Assert.Throws<ArgumentNullException>(() => new Layer(new Matrix(1, 1), new Vector(1), x => x, null));
         }
 
         [Theory]
@@ -24,7 +25,7 @@ namespace DotLearning.Tests.NeuralNetworks.MatrixBased
             var weights = new Matrix(weightRows, weightColumns);
             var biases = new Vector(biasesLength);
 
-            Assert.Throws<ArgumentException>(() => new Layer(weights, biases, x => x));
+            Assert.Throws<ArgumentException>(() => new Layer(weights, biases, x => x, x => x));
         }
 
         [Theory]
@@ -35,7 +36,7 @@ namespace DotLearning.Tests.NeuralNetworks.MatrixBased
             var weights = new Matrix(weightRows, weightColumns);
             var biases = new Vector(biasesLength);
 
-            var layer = new Layer(weights, biases, x => x);
+            var layer = new Layer(weights, biases, x => x, x => x);
 
             Assert.NotNull(layer);
         }
@@ -43,7 +44,7 @@ namespace DotLearning.Tests.NeuralNetworks.MatrixBased
         [Fact]
         public void Calculate_ThrowsIfInputIsNull()
         {
-            var layer = new Layer(new Matrix(1, 1), new Vector(1), x => x);
+            var layer = new Layer(new Matrix(1, 1), new Vector(1), x => x, x => x);
             Assert.Throws<ArgumentNullException>(() => layer.Calculate(null));
         }
         
@@ -52,7 +53,7 @@ namespace DotLearning.Tests.NeuralNetworks.MatrixBased
         public void Calculate_AppliesWeights(Matrix weights, Vector input, Vector expected)
         {
             var biases = new Vector(weights.Rows);
-            var layer = new Layer(weights, biases, x => x);
+            var layer = new Layer(weights, biases, x => x, x => x);
             
             var result = layer.Calculate(input);
 
@@ -64,7 +65,7 @@ namespace DotLearning.Tests.NeuralNetworks.MatrixBased
         public void Calculate_AppliesBiases(Vector biases, Vector input, Vector expected)
         {
             var weights = new Matrix(biases.Count, input.Count); // all zero so results are bias only
-            var layer = new Layer(weights, biases, x => x);
+            var layer = new Layer(weights, biases, x => x, x => x);
 
             var result = layer.Calculate(input);
 
@@ -81,7 +82,7 @@ namespace DotLearning.Tests.NeuralNetworks.MatrixBased
                     weights[i, j] = 1d;
 
             var biases = new Vector(expected.Count);
-            var layer = new Layer(weights, biases, activationFunction);
+            var layer = new Layer(weights, biases, activationFunction, x => x);
 
             var result = layer.Calculate(input);
 

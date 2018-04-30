@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using DotLearning.NeuralNetworks.Simple;
 
-namespace DotLearning.Examples
+namespace DotLearning.Examples.Iris
 {
     // https://www.tensorflow.org/get_started/get_started_for_beginners
-    internal class Iris
+    internal class SimpleIris
     {
         private List<(double[] input, double[] expected)> _trainingData;
         private List<(double[] input, double[] expected)> _testData;
