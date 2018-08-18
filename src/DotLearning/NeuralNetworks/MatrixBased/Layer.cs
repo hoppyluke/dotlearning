@@ -27,12 +27,13 @@ namespace DotLearning.NeuralNetworks.MatrixBased
             _activationFunction = activationFunction ?? throw new ArgumentNullException(nameof(activationFunction));
             _activationFunctionDerivative = activationFunctionDerivative ?? throw new ArgumentNullException(nameof(activationFunction));
             _errors = new List<Vector>();
+            _trainingInputs = new List<Vector>();
         }
 
         public virtual Vector Calculate(Vector input)
         {
-            if (input == null) throw new ArgumentNullException(nameof(input));
-            
+            _lastInput = input ?? throw new ArgumentNullException(nameof(input));
+
             _weightedInput = (Vector)(_weights * input) + _biases;
             return _output = Vector.Apply(_activationFunction, _weightedInput);
         }
