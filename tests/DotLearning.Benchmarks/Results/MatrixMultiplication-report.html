@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>DotLearning.Benchmarks.MatrixMultiplication-20190522-112648</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.11.5, OS=Windows 10.0.17134.706 (1803/April2018Update/Redstone4)
+Intel Core i7-4720HQ CPU 2.60GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
+Frequency=2533205 Hz, Resolution=394.7568 ns, Timer=TSC
+.NET Core SDK=2.2.300
+  [Host]   : .NET Core 2.2.5 (CoreCLR 4.6.27617.05, CoreFX 4.6.27618.01), 64bit RyuJIT
+  ShortRun : .NET Core 2.2.5 (CoreCLR 4.6.27617.05, CoreFX 4.6.27618.01), 64bit RyuJIT
+</code></pre>
+<pre><code>Job=ShortRun  IterationCount=3  LaunchCount=1  
+WarmupCount=3  
+</code></pre>
+
+<table>
+<thead><tr><th>       Method</th><th>Size</th><th>       Mean</th><th>      Error</th><th>   StdDev</th><th>Ratio</th>
+</tr>
+</thead><tbody><tr><td>BasicMultiplication</td><td>10</td><td>2.541 us</td><td>0.9389 us</td><td>0.0515 us</td><td>1.00</td>
+</tr><tr><td>BasicMultiplication</td><td>100</td><td>2,178.924 us</td><td>35.8990 us</td><td>1.9677 us</td><td>1.00</td>
+</tr><tr><td>BasicMultiplication</td><td>500</td><td>356,025.536 us</td><td>60,134.5322 us</td><td>3,296.1766 us</td><td>1.00</td>
+</tr><tr><td>BasicMultiplication</td><td>1000</td><td>5,071,792.584 us</td><td>3,245,715.4672 us</td><td>177,908.6169 us</td><td>1.00</td>
+</tr><tr><td>BasicMultiplication</td><td>2000</td><td>78,297,415.330 us</td><td>2,472,726.1829 us</td><td>135,538.4659 us</td><td>1.00</td>
+</tr></tbody></table>
+</body>
+</html>

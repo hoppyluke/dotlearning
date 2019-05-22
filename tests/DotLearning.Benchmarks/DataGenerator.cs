@@ -15,5 +15,16 @@ namespace DotLearning.Benchmarks
 
             return a;
         }
+
+        public static double[,] Matrix(int rows, int columns)
+        {
+            var m = new double[rows, columns];
+
+            for (var i = 0; i < rows; i++)
+                for (var j = 0; j < columns; j++)
+                    m[i, j] = random.NextDouble();
+
+            return m;
+        }
     }
 }

@@ -8,16 +8,26 @@ namespace DotLearning.Benchmarks
     {
         static void Main(string[] args)
         {
-            if(args.Length > 0 && args[0].ToLowerInvariant() == "manual")
-            {
-                ManualBenchmarks();
-                return;
-            }
+            var benchmark = args.Length == 0 ? "neuralnets" : args[0].ToLowerInvariant();
 
-            BenchmarkRunner.Run<NeuralNetworks>();
+            switch (benchmark)
+            {
+                case "manualnets":
+                    ManualNeuralNetworkBenchmarks();
+                    return;
+                case "neuralnets":
+                    BenchmarkRunner.Run<NeuralNetworks>();
+                    return;
+                case "matrix":
+                    BenchmarkRunner.Run<MatrixMultiplication>();
+                    return;
+                default:
+                    Console.WriteLine("Unknown benchmark: " + benchmark);
+                    return;
+            }
         }
 
-        private static void ManualBenchmarks()
+        private static void ManualNeuralNetworkBenchmarks()
         {
             var s = new Stopwatch();
             var b = new NeuralNetworks();
