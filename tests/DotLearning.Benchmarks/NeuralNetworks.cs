@@ -45,7 +45,7 @@ namespace DotLearning.Benchmarks
             }
         }
 
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public void Simple()
         {
             simple.Train(trainingData, epochs, batchSize, learningRate, meanSquaredErrorDerivative);
