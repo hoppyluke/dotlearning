@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Jobs;
 using DotLearning.Mathematics.LinearAlgebra;
 using MatrixNet = DotLearning.NeuralNetworks.MatrixBased.NeuralNetwork;
 using SimpleNet = DotLearning.NeuralNetworks.Simple.NeuralNetwork;
